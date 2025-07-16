@@ -33,6 +33,7 @@ module.exports = (env, argv) => {
             isProduction && new MiniCssExtractPlugin({
                 filename: 'styles.[contenthash].css',
             }),
+            /*
             isProduction && {
                 apply: (compiler) => {
                     compiler.hooks.emit.tapAsync('Obfuscator', (compilation, callback) => {
@@ -87,6 +88,7 @@ module.exports = (env, argv) => {
                     });
                 },
             },
+            */
         ].filter(Boolean),
         devServer: {
             static: {
