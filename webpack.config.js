@@ -29,15 +29,17 @@ module.exports = (env, argv) => {
             isProduction && {
                 apply: (compiler) => {
                     compiler.hooks.emit.tapAsync('Obfuscator', (compilation, callback) => {
-                        compilation.assets = Object.entries(compilation.assets).reduce((acc, [filename, asset]) => {
+                        const newAssets = {};
+                        for (const filename in compilation.assets) {
                             if (filename.endsWith('.js')) {
+                                const asset = compilation.assets[filename];
                                 const source = asset.source();
-                                const obfuscated = JavaScriptObfuscator.obfuscate(source, {
+                                const obfuscationResult = JavaScriptObfuscator.obfuscate(source, {
                                     compact: true,
                                     controlFlowFlattening: true,
                                     deadCodeInjection: true,
-                                    debugProtection: true,
-                                    debugProtectionInterval: 4000,
+                                    debugProtection: false, // Pode causar problemas com source maps
+                                    debugProtectionInterval: 0,
                                     disableConsoleOutput: true,
                                     identifierNamesGenerator: 'hexadecimal',
                                     log: false,
@@ -51,24 +53,29 @@ module.exports = (env, argv) => {
                                     stringArrayThreshold: 0.75,
                                     unicodeEscapeSequence: false,
                                     sourceMap: true,
-                                    sourceMapBaseUrl: '',
+                                    sourceMapBaseUrl: '', // Mantido em branco para caminhos relativos
                                     sourceMapFileName: `${filename}.map`,
-                                }).getObfuscatedCode();
-                                
-                                acc[`${filename}.map`] = {
-                                  source: () => obfuscated.sourceMap,
-                                  size: () => obfuscated.sourceMap.length,
+                                });
+
+                                const obfuscatedCode = obfuscationResult.getObfuscatedCode();
+                                const sourceMap = obfuscationResult.getSourceMap();
+
+                                newAssets[filename] = {
+                                    source: () => obfuscatedCode,
+                                    size: () => obfuscatedCode.length,
                                 };
 
-                                acc[filename] = {
-                                    source: () => obfuscated,
-                                    size: () => obfuscated.length,
-                                };
+                                if (sourceMap) {
+                                    newAssets[`${filename}.map`] = {
+                                        source: () => sourceMap,
+                                        size: () => sourceMap.length,
+                                    };
+                                }
                             } else {
-                                acc[filename] = asset;
+                                newAssets[filename] = compilation.assets[filename];
                             }
-                            return acc;
-                        }, {});
+                        }
+                        compilation.assets = newAssets;
                         callback();
                     });
                 },
