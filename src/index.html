@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tarefas (To-Do)</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Lista de Tarefas</h1>
+            <form id="task-form">
+                <input type="text" id="task-input" placeholder="O que precisa ser feito?" required>
+                <button type="submit">Adicionar Tarefa</button>
+            </form>
+        </header>
+        <main>
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="active">Ativas</button>
+                <button class="filter-btn" data-filter="completed">Completadas</button>
+            </div>
+            <ul id="task-list"></ul>
+        </main>
+        <footer>
+            <p><span id="task-count">0</span> tarefas restantes</p>
+            <button id="clear-completed">Limpar Completadas</button>
+        </footer>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,13 @@
+{
+  "name": "js-obfuscator-poc",
+  "version": "1.0.0",
+  "description": "POC de ofuscação de código JavaScript",
+  "main": "src/js/main.js",
+  "scripts": {
+    "start": "webpack serve --mode development",
+    "build": "webpack --mode production"
+  },
+  "dependencies": {
+    "javascript-obfuscator": "^4.1.0"
+  }
+} 
