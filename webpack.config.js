@@ -10,9 +10,10 @@ module.exports = (env, argv) => {
         output: {
             path: path.resolve(__dirname, 'dist'),
             filename: 'bundle.[contenthash].js',
+            publicPath: isProduction ? '/poc-obfuscator-v1/' : '/',
             clean: true,
         },
-        devtool: isProduction ? 'source-map' : 'eval-source-map',
+        devtool: isProduction ? false : 'eval-source-map',
         module: {
             rules: [
                 {
