@@ -68,12 +68,16 @@ class ToDoApp {
 
     handleTaskClick(e) {
         const target = e.target;
-        const taskId = parseInt(target.closest('.task-item').dataset.id, 10);
+        const taskItem = target.closest('.task-item');
+        if (!taskItem) return;
 
-        if (target.classList.contains('toggle')) {
-            this.toggleTask(taskId);
-        } else if (target.classList.contains('destroy')) {
+        const taskId = parseInt(taskItem.dataset.id, 10);
+
+        if (target.classList.contains('destroy')) {
             this.deleteTask(taskId);
+        } else {
+            // Clicar em qualquer lugar do item (exceto no botão de deletar) deve "toggle" a tarefa
+            this.toggleTask(taskId);
         }
     }
     
