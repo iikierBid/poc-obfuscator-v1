@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const JavaScriptObfuscator = require('javascript-obfuscator');
 
 module.exports = (env, argv) => {
@@ -13,18 +14,24 @@ module.exports = (env, argv) => {
             publicPath: isProduction ? '/poc-obfuscator-v1/' : '/',
             clean: true,
         },
-        devtool: isProduction ? false : 'eval-source-map',
+        devtool: false, // Desativado para produção
         module: {
             rules: [
                 {
                     test: /\.css$/,
-                    use: ['style-loader', 'css-loader'],
+                    use: [
+                        isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+                        'css-loader'
+                    ],
                 },
             ],
         },
         plugins: [
             new HtmlWebpackPlugin({
                 template: './src/index.html',
+            }),
+            isProduction && new MiniCssExtractPlugin({
+                filename: 'styles.[contenthash].css',
             }),
             isProduction && {
                 apply: (compiler) => {
